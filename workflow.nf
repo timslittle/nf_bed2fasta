@@ -68,21 +68,12 @@ process EXTRACT {
 	"""
 	#!/usr/bin/env Rscript
 
-	# Use 'egrep' in Bash to get the line and index of the first alignment line.
-		first_line <- system(paste0('egrep -v -n "^@" ', '${samfile}', ' | head -n 1'), 
-								intern = TRUE)
-		# Get the index of the first line of the sam file with alignments.
-		first_line_index <- gsub(first_line, 
-								pattern = '(?<=[[:digit:]]):.+', 
-								replacement = '', 
-								perl = TRUE)
-		# Need to use 'fill' as there are some empty cells in the sam file.
-		# Skip using the index to ignore the non-alignment lines.
-		sam <- read.table('mt.sam', 
-						header = FALSE,
-						skip = as.integer(first_line_index), 
-						sep ="\t", 
-						fill = T)
+		lsam <- readLines('mt.sam')
+		dfsam <- lsam[!grepl(lsam, pattern = '^@', perl = TRUE)]
+		sam <- read.table(text = dfsam, 
+						fill = TRUE, 
+						row.names = NULL,
+						header = FALSE)
 
 		# Subset sam by the bed file regions. 
 		bed <- read.table('${bedfile}', 
