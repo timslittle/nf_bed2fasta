@@ -86,12 +86,12 @@ process EXTRACT {
 	bed <- read.table('regions.bed', 
 					header = FALSE, 
 					col.names = c('chr', 'start', 'end'))
-	sam_chr <- sam[sam$V3 == bed$chr,]
+	sam_chr <- sam[sam\$V3 == bed\$chr,]
 	# Need to include those that start outside the region but overlap with it.
-	index <- as.integer(sam_chr$V4) >= as.integer(bed$start) & 
-	as.integer(sam_chr$V4) <= as.integer(bed$end) |
-	as.integer(sam_chr$V4) < as.integer(bed$start) &
-	as.integer(sam_chr$V4) + nchar(sam_chr$V10) >= as.integer(bed$start)
+	index <- as.integer(sam_chr\$V4) >= as.integer(bed\$start) & 
+	as.integer(sam_chr\$V4) <= as.integer(bed\$end) |
+	as.integer(sam_chr\$V4) < as.integer(bed\$start) &
+	as.integer(sam_chr\$V4) + nchar(sam_chr\$V10) >= as.integer(bed\$start)
 	sam_reg <- sam_chr[index,]
 
 	# Use pastes and cat to format the sequence names and sequences as a fasta file,
