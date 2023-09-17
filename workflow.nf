@@ -17,13 +17,13 @@ process COUNTING {
 	path bedfile
 
 	output:
-	path  
+	path counts.txt
 
 	script:
 	"""
 	samtools sort ${bamfile} -o sorted_${bamfile}
 	samtools index sorted_${bamfile}
-	samtools bedcov -c ${bedfile} sorted_${bamfile}
+	samtools bedcov ${bedfile} sorted_${bamfile} > counts.txt
 	"""
 }
 
