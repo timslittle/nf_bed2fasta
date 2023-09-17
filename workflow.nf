@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
-params.bamfile = '../../input/mt.bam'
-params.bedfile = '../../input/regions.bed.gz'
+params.bamfile = '../input/mt.bam'
+params.bedfile = '../input/regions.bed.gz'
 
 process COUNTING {
 	// TODO: Need to add bioconda to channel
