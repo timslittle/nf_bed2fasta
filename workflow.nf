@@ -7,6 +7,8 @@ process COUNTING {
 	// TODO: Need to add bioconda to channel
 	// conda "bioconda::samtools=1.14"
 
+	publishDir: "results/${task.process}"
+
 	container: 'biocontainers/samtools'
 	
 	input:
@@ -14,13 +16,13 @@ process COUNTING {
 	path bedfile
 
 	output:
-	stdout 
+	path  
 
 	script:
 	"""
 	samtools sort ${bamfile} -o sorted_${bamfile}
 	samtools index sorted_${bamfile}
-	samtools bedcov ${bedfile} sorted_${bamfile}
+	samtools bedcov -c ${bedfile} sorted_${bamfile}
 	"""
 }
 
