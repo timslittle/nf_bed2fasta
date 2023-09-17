@@ -45,8 +45,8 @@ process EXTRACT {
 }
 
 workflow{
-	bamfile_ch = Channel.fromPath(params.bamfile)
-	bedfile_ch = Channel.fromPath(params.bedfile)
+	bamfile_ch = Channel.fromPath(params.bamfile, checkIfExists: true)
+	bedfile_ch = Channel.fromPath(params.bedfile, checkIfExists: true)
 
 	COUNTING(bamfile_ch,
 		bedfile_ch)
