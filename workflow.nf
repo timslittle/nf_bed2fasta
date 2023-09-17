@@ -21,9 +21,15 @@ process COUNTING {
 
 	script:
 	"""
+	# Sort and index the .bam file
 	samtools sort ${bamfile} -o sorted_${bamfile}
 	samtools index sorted_${bamfile}
-	samtools bedcov ${bedfile} sorted_${bamfile} | \\
+	# Use view to count the alignments within the regions specified by the bed file
+	samtools view -hcM -L ${bedfile} sorted_${bamfile} > counts.txt
+	# Echo the bed file and the counts file so awk will read them in as a single line.
+	# 	Use awk to output as .json by specifying all the quotations, squiggly brackets, and colons. 
+	#	The former two need to be escaped with \.
+	echo \$(cat ${bedfile}) \$(cat counts.txt) | \\
 		awk 'BEGIN{ print "\\{" } {print "\\"region\\":" "\\{\\"locus\\":""\\""\$1 ":" \$2 "-" \$3"\\"" ",\\"counts\\":" "\\""\$4"\\"\\}"} END{print "\\}"}' \\
 		> counts.json
 	"""
