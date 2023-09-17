@@ -60,7 +60,7 @@ process EXTRACT {
 	path samfile
 
 	output:
-	path 
+	path '*fasta'
 
 	script:
 	"""
