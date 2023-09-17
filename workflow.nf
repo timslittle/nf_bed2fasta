@@ -17,13 +17,15 @@ process COUNTING {
 	path bedfile
 
 	output:
-	path "counts.txt"
+	path "counts.json"
 
 	script:
 	"""
 	samtools sort ${bamfile} -o sorted_${bamfile}
 	samtools index sorted_${bamfile}
-	samtools bedcov ${bedfile} sorted_${bamfile} > counts.txt
+	samtools bedcov ${bedfile} sorted_${bamfile} | \\
+		awk 'BEGIN{ print "\\{" } {print "\\"region\\":" "\\{\\"locus\\":""\\""\$1 ":" \$2 "-" \$3"\\"" ",\\"counts\\":" "\\""\$4"\\"\\}"} END{print "\\}"}' \\
+		> counts.json
 	"""
 }
 
