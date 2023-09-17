@@ -54,59 +54,60 @@ process BAM_2_SAM {
 }
 
 process EXTRACT {
+
+	publishDir "results/${task.process}", mode: 'copy'
 	
 	input:
-	path bedfile
 	path samfile
+	path bedfile
 
 	output:
 	path '*fasta'
 
 	script:
 	"""
-	#!/usr/bin/env R
+	#!/usr/bin/env Rscript
 
 	# Use 'egrep' in Bash to get the line and index of the first alignment line.
-	first_line <- system('egrep -v -n "^@" mt.sam | head -n 1', 
-							intern = TRUE)
-	# Get the index of the first line of the sam file with alignments.
-	first_line_index <- gsub(first_line, 
-							pattern = '(?<=[[:digit:]]):.+', 
-							replacement = '', 
-							perl = TRUE)
-	# Need to use 'fill' as there are some empty cells in the sam file.
-	# Skip using the index to ignore the non-alignment lines.
-	sam <- read.table('mt.sam', 
-					header = FALSE,
-					skip = as.integer(first_line_index), 
-					sep ="\t", 
-					fill = T)
+		first_line <- system(paste0('egrep -v -n "^@" ', '${samfile}', ' | head -n 1'), 
+								intern = TRUE)
+		# Get the index of the first line of the sam file with alignments.
+		first_line_index <- gsub(first_line, 
+								pattern = '(?<=[[:digit:]]):.+', 
+								replacement = '', 
+								perl = TRUE)
+		# Need to use 'fill' as there are some empty cells in the sam file.
+		# Skip using the index to ignore the non-alignment lines.
+		sam <- read.table('mt.sam', 
+						header = FALSE,
+						skip = as.integer(first_line_index), 
+						sep ="\t", 
+						fill = T)
 
-	# Subset sam by the bed file regions. 
-	bed <- read.table('regions.bed', 
-					header = FALSE, 
-					col.names = c('chr', 'start', 'end'))
-	sam_chr <- sam[sam\$V3 == bed\$chr,]
-	# Need to include those that start outside the region but overlap with it.
-	index <- as.integer(sam_chr\$V4) >= as.integer(bed\$start) & 
-	as.integer(sam_chr\$V4) <= as.integer(bed\$end) |
-	as.integer(sam_chr\$V4) < as.integer(bed\$start) &
-	as.integer(sam_chr\$V4) + nchar(sam_chr\$V10) >= as.integer(bed\$start)
-	sam_reg <- sam_chr[index,]
+		# Subset sam by the bed file regions. 
+		bed <- read.table('${bedfile}', 
+						header = FALSE, 
+						col.names = c('chr', 'start', 'end'))
+		sam_chr <- sam[sam\$V3 == bed\$chr,]
+		# Need to include those that start outside the region but overlap with it.
+		index <- as.integer(sam_chr\$V4) >= as.integer(bed\$start) & 
+		as.integer(sam_chr\$V4) <= as.integer(bed\$end) |
+		as.integer(sam_chr\$V4) < as.integer(bed\$start) &
+		as.integer(sam_chr\$V4) + nchar(sam_chr\$V10) >= as.integer(bed\$start)
+		sam_reg <- sam_chr[index,]
 
-	# Use pastes and cat to format the sequence names and sequences as a fasta file,
-	#   as well as saving the output.
-	cat(
-	paste(
-		apply(
-		sam_reg, 
-		1, 
-		function(x) {
-			paste( paste0('>', x[1]), x[10], sep = '\n')
-		}),
-		collapse = '\n'),
-	file = 'mt.fasta')
-
+		# Use pastes and cat to format the sequence names and sequences as a fasta file,
+		#   as well as saving the output.
+		cat(
+		paste(
+			apply(
+			sam_reg, 
+			1, 
+			function(x) {
+				paste( paste0('>', x[1]), x[10], sep = '\n')
+			}),
+			collapse = '\n'),
+		file = 'mt.fasta')
 	"""
 }
 
@@ -119,6 +120,6 @@ workflow{
 	
 	samfile_ch = BAM_2_SAM(bamfile_ch)
 
-	EXTRACT(bedfile_ch,
-		bamfile_ch)
+	EXTRACT(samfile_ch,
+	bedfile_ch)
 }
