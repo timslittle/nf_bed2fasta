@@ -35,8 +35,6 @@ process COUNTING {
 	"""
 }
 
-// TODO: Output needs to be JSON
-
 process EXTRACT {
 	
 	input:
