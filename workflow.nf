@@ -7,8 +7,8 @@ process COUNTING {
 	// TODO: Need to add bioconda to channel
 	// conda "bioconda::samtools=1.14"
 
-	publishDir: "results/${task.process}"
-	
+	publishDir "results/${task.process}"
+
 	// TODO: Ignoring this container command at the moment.
 	// container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
 	
