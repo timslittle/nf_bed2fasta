@@ -5,7 +5,7 @@ params.bedfile = '../input/regions.bed.gz'
 
 process COUNTING {
 	// TODO: Need to add bioconda to channel
-	// conda "bioconda::samtools=1.14"
+	conda "bioconda::samtools=1.14"
 
 	publishDir "results/${task.process}", mode: 'copy'
 
@@ -38,6 +38,8 @@ process COUNTING {
 }
 
 process BAM_2_SAM {
+
+	conda "bioconda::samtools=1.14"
 
 	input:
 	path bamfile
