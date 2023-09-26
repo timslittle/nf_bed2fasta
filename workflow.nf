@@ -5,7 +5,8 @@ params.bedfile = '../input/regions.bed.gz'
 
 process COUNTING {
 	conda "bioconda::samtools=1.14"
-	container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
+	//container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
+	container 'depot.galaxyproject.org/singularity/samtools%3A1.17--hd87286a_1'
 
 	publishDir "results/${task.process}", mode: 'copy'
 	
@@ -37,7 +38,8 @@ process COUNTING {
 process BAM_2_SAM {
 
 	conda "bioconda::samtools=1.14"
-	container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
+	//container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
+	container 'depot.galaxyproject.org/singularity/samtools%3A1.17--hd87286a_1'
 
 	input:
 	path bamfile
