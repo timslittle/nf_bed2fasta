@@ -23,7 +23,7 @@ If your HPC system has a Nextflow profile then be sure to use this after the `-p
 
 It is recommended to use a `-profile` such as `docker`, `singularity` or `conda`. However you could omit specifying a profile completely if you have `samtools`, `R`, and their own dependencies running locally.
 
-After a successful run, the `results` folder will contain the counts file inside `COUNTS` and sequence fasta file inside `EXTRACT'.
+After a successful run, the `results` folder will contain the counts file inside `COUNTS` and sequence fasta file inside `EXTRACT`.
 
 ## Tests.
 
