@@ -55,6 +55,8 @@ process BAM_2_SAM {
 
 process EXTRACT {
 
+	conda "r::r"
+
 	publishDir "results/${task.process}", mode: 'copy'
 	
 	input:
