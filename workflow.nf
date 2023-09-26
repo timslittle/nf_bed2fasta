@@ -5,11 +5,9 @@ params.bedfile = '../input/regions.bed.gz'
 
 process COUNTING {
 	conda "bioconda::samtools=1.14"
+	container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
 
 	publishDir "results/${task.process}", mode: 'copy'
-
-	// TODO: Ignoring this container command at the moment.
-	// container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
 	
 	input:
 	path bamfile
@@ -39,6 +37,7 @@ process COUNTING {
 process BAM_2_SAM {
 
 	conda "bioconda::samtools=1.14"
+	container 'quay.io/biocontainers/samtools:1.17--hd87286a_1'
 
 	input:
 	path bamfile
